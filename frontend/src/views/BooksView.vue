@@ -3,7 +3,7 @@
     <div class="container">
       <SectionHeader title="Books" text="Books text" />
       <BookList :books="paginatedBook" />
-      <Pagination :currentPage="currentPage" :totalPages="totalPages" />
+      <Pagination :currentPage="currentPage" :totalPages="totalPages" @page-changed="updatePage" />
     </div>
   </section>
 </template>
@@ -30,7 +30,11 @@ export default {
       return books.slice(startIndex, endIndex)
     })
 
-    return { books, currentPage, itemsPerPage, totalPages, paginatedBook }
+    const updatePage = (page) => {
+      currentPage.value = page
+    }
+
+    return { books, currentPage, itemsPerPage, totalPages, paginatedBook, updatePage }
   },
   components: { SectionHeader, BookList, Pagination }
 }
