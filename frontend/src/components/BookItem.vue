@@ -9,7 +9,7 @@
       </div>
       <h5 class="card-title mt-3 fw-semibold">{{ book.name }}</h5>
       <p class="card-text">
-        {{ book.description }}
+        {{ truncatedText }}
       </p>
       <div class="d-flex justify-content-between align-items-center">
         <a href="#" class="card-link">Read More</a>
@@ -52,9 +52,20 @@ export default {
       }
     })
 
-    return { ratingBageClass }
+    const truncatedText = computed(() => {
+      if (book.value.description.length > 80) {
+        return book.value.description.slice(0, 80) + '...'
+      }
+      return book.value.description
+    })
+
+    return { ratingBageClass, truncatedText }
   }
 }
 </script>
 
-<style></style>
+<style scoped>
+.card-text {
+  min-height: 70px;
+}
+</style>

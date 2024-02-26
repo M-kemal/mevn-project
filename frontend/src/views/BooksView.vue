@@ -18,7 +18,7 @@ export default {
   name: 'BooksView',
   setup() {
     const currentPage = ref(1)
-    const itemsPerPage = ref(4)
+    const itemsPerPage = ref(8)
 
     const totalPages = computed(() => {
       return Math.ceil(books.length / itemsPerPage.value)

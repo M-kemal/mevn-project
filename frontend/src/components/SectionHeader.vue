@@ -10,14 +10,16 @@
 <script>
 export default {
   name: 'SectionHeader',
-  //   props: ['title', 'text'],
+  // props: ['title', 'text'],
   props: {
     title: {
       type: String,
+      default: 'title',
       required: true
     },
     text: {
       type: String,
+      default: 'text',
       required: true
     }
   },
