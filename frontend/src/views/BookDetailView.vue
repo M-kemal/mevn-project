@@ -1,7 +1,14 @@
 <template>
   <div class="container">
     <SectionHeader v-if="book.name && book.author" :title="book.name" :text="book.author" />
-    <button class="btn btn-primary">Back</button>
+    <!-- <button class="btn btn-primary">Back</button> -->
+    <font-awesome-icon
+      :icon="['fas', 'arrow-left']"
+      size="2xl"
+      class="mb-2"
+      style="cursor: pointer"
+      @click="goToBackBooks"
+    />
     <div class="row mb-4">
       <div class="col-lg-6">
         <img class="card-img-top" src="../../bostorek/images/b_detail.jpg" alt="" />
@@ -44,7 +51,45 @@
               <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
               <div class="d-flex justify-content-between">
                 <p class="fw-bold fst-italic">John Doe</p>
-                <div class="d-flex aling-items-center">
+                <div class="d-flex align-items-center">
+                  <font-awesome-icon :icon="['far', 'thumbs-up']" />
+                  <!-- <p>Upvote</p> -->
+                  <p class="ps-2 mb-0"><strong>9</strong></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div class="card-body">
+              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
+              <div class="d-flex justify-content-between">
+                <p class="fw-bold fst-italic">John Doe</p>
+                <div class="d-flex align-items-center">
+                  <!-- <p>Upvote</p> -->
+                  <font-awesome-icon :icon="['far', 'thumbs-up']" />
+                  <p class="ps-2 mb-0"><strong>9</strong></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div class="card-body">
+              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
+              <div class="d-flex justify-content-between">
+                <p class="fw-bold fst-italic">John Doe</p>
+                <div class="d-flex align-items-center">
+                  <p>Upvote</p>
+                  <p class="ps-2 mb-0"><strong>9</strong></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card mb-2">
+            <div class="card-body">
+              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
+              <div class="d-flex justify-content-between">
+                <p class="fw-bold fst-italic">John Doe</p>
+                <div class="d-flex align-items-center">
                   <p>Upvote</p>
                   <p class="ps-2"><strong>9</strong></p>
                 </div>
@@ -56,7 +101,7 @@
               <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
               <div class="d-flex justify-content-between">
                 <p class="fw-bold fst-italic">John Doe</p>
-                <div class="d-flex aling-items-center">
+                <div class="d-flex align-items-center">
                   <p>Upvote</p>
                   <p class="ps-2"><strong>9</strong></p>
                 </div>
@@ -68,43 +113,7 @@
               <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
               <div class="d-flex justify-content-between">
                 <p class="fw-bold fst-italic">John Doe</p>
-                <div class="d-flex aling-items-center">
-                  <p>Upvote</p>
-                  <p class="ps-2"><strong>9</strong></p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card mb-2">
-            <div class="card-body">
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
-              <div class="d-flex justify-content-between">
-                <p class="fw-bold fst-italic">John Doe</p>
-                <div class="d-flex aling-items-center">
-                  <p>Upvote</p>
-                  <p class="ps-2"><strong>9</strong></p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card mb-2">
-            <div class="card-body">
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
-              <div class="d-flex justify-content-between">
-                <p class="fw-bold fst-italic">John Doe</p>
-                <div class="d-flex aling-items-center">
-                  <p>Upvote</p>
-                  <p class="ps-2"><strong>9</strong></p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card mb-2">
-            <div class="card-body">
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
-              <div class="d-flex justify-content-between">
-                <p class="fw-bold fst-italic">John Doe</p>
-                <div class="d-flex aling-items-center">
+                <div class="d-flex align-items-center">
                   <p>Upvote</p>
                   <p class="ps-2"><strong>9</strong></p>
                 </div>
@@ -119,7 +128,7 @@
 
 <script>
 import SectionHeader from '@/components/SectionHeader.vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import db from '@/db.js'
 import { onMounted, ref } from 'vue'
 export default {
@@ -135,7 +144,15 @@ export default {
       book.value = db.find((b) => b.id === parseInt(bookId))
     })
 
-    return { book }
+    const router = useRouter()
+
+    const goToBackBooks = () => {
+      //   router.back() bu şekilde de olabilir.
+      //   router.push({ name: 'books' })
+      router.go(-1)
+    }
+
+    return { book, goToBackBooks }
   },
   components: { SectionHeader }
 }
