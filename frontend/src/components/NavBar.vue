@@ -33,7 +33,7 @@ export default {
 
 <style scoped>
 .costum-nav {
-  background: #063547;
+  background: var(--primary-color);
   padding: 15px 0px;
 }
 .navbar-brand {
@@ -50,10 +50,10 @@ export default {
 }
 
 .nav-link:hover {
-  color: #44b89d;
+  color: var(--secondary-color);
 }
 
 .active-link {
-  color: #44b89d;
+  color: var(--secondary-color);
 }
 </style>

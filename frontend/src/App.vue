@@ -1,16 +1,18 @@
 <template>
   <NavBar />
   <RouterView />
+  <TheFooter />
 </template>
 
 <script>
 import NavBar from './components/NavBar.vue'
+import TheFooter from './components/TheFooter.vue'
 
 export default {
   setup() {
     return {}
   },
-  components: { NavBar }
+  components: { NavBar, TheFooter }
 }
 </script>
 
@@ -23,5 +25,11 @@ body {
 }
 a {
   text-decoration: none;
+}
+
+.full-section-height {
+  min-height: calc(100vh - 130px);
+  display: flex;
+  align-items: center;
 }
 </style>
