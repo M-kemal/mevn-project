@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <SectionHeader v-if="book.name && book.author" :title="book.name" :text="book.author" />
+  <div class="container" v-if="!loading">
+    <SectionHeader v-if="book.title && book.author" :title="book.title" :text="book.author" />
     <!-- <button class="btn btn-primary">Back</button> -->
     <font-awesome-icon
       :icon="['fas', 'arrow-left']"
@@ -22,7 +22,7 @@
             <div class="col-lg-6">
               <strong>Page</strong>
             </div>
-            <div class="col-lg-6">{{ book.page }}</div>
+            <div class="col-lg-6">{{ book.pageNumber }}</div>
           </div>
           <div class="row border-bottom pb-2">
             <div class="col-lg-6">
@@ -34,13 +34,14 @@
             <div class="col-lg-6">
               <strong>Raiting</strong>
             </div>
-            <div class="col-lg-6">{{ book.rating }}</div>
+            <div class="col-lg-6">{{ book.raiting }}</div>
           </div>
           <div class="row border-bottom pb-2">
             <div class="col-lg-6">
               <strong>Upload Date</strong>
             </div>
-            <div class="col-lg-6">{{ book.uploadDate }}</div>
+            <!-- <div class="col-lg-6">{{ book.updatedAt }}</div> -->
+            <div class="col-lg-6">{{ formattedUpdateDate }}</div>
           </div>
         </div>
 
@@ -124,27 +125,61 @@
       </div>
     </div>
   </div>
+  <div class="container" v-else>
+    <p>Book Detail is Loading....</p>
+  </div>
 </template>
 
 <script>
 import SectionHeader from '@/components/SectionHeader.vue'
 import { useRoute, useRouter } from 'vue-router'
-import db from '@/db.js'
-import { onMounted, ref } from 'vue'
+import { useFormattedDate } from '@/composable/useFormattedDate'
+// import db from '@/db.js'
+import { onMounted, ref, watch } from 'vue'
 export default {
   name: 'BookDetailView',
   setup() {
-    const book = ref({})
+    const book = ref(null)
 
     const route = useRoute()
 
-    const bookId = route.params.id
+    // const bookId = route.params.id
 
-    onMounted(() => {
-      book.value = db.find((b) => b.id === parseInt(bookId))
-    })
+    // onMounted(() => {
+    //   book.value = db.find((b) => b.id === parseInt(bookId))
+    // })
 
     const router = useRouter()
+
+    const loading = ref(true)
+
+    const fetchABook = async () => {
+      const bookId = route.params.id
+      try {
+        const response = await fetch(`http://localhost:3000/api/v1/books/${bookId}`)
+        const data = await response.json()
+        console.log('DATA', data)
+        book.value = data
+        loading.value = false
+      } catch (error) {}
+    }
+
+    onMounted(() => {
+      fetchABook()
+    })
+
+    const formattedUpdateDate = ref('')
+    // book.value değiştiğinde çalışacak
+    watch(
+      () => book.value,
+      (newValue) => {
+        if (newValue && newValue.updatedAt) {
+          const { formattedDate } = useFormattedDate(newValue.updatedAt)
+          formattedUpdateDate.value = formattedDate.value
+        }
+      },
+      { immediate: true }
+    )
 
     const goToBackBooks = () => {
       //   router.back() bu şekilde de olabilir.
@@ -152,7 +187,7 @@ export default {
       router.go(-1)
     }
 
-    return { book, goToBackBooks }
+    return { book, goToBackBooks, loading, formattedUpdateDate }
   },
   components: { SectionHeader }
 }

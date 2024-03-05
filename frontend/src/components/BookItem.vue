@@ -9,14 +9,14 @@
           >{{ book.author }}</span
         >
       </div>
-      <h5 class="card-title mt-3 fw-semibold">{{ book.name }}</h5>
+      <h5 class="card-title mt-3 fw-semibold">{{ book.title }}</h5>
       <p class="card-text">
         {{ truncatedText }}
       </p>
       <div class="d-flex justify-content-between align-items-center">
         <a href="#" class="card-link">Read More</a>
         <p style="background-color: var(--primary-color)" class="py-1 px-2 text-white badge mb-0">
-          {{ book.uploadDate }}
+          {{ formattedDate }}
         </p>
       </div>
     </div>
@@ -24,14 +24,14 @@
       :class="ratingBageClass"
       class="position-absolute top-0 start-100 translate-middle p-2 text-light rounded-circle border border-2 border-light"
     >
-      {{ book.rating }}
+      {{ book.raiting }}
     </span>
   </div>
 </template>
 
 <script>
 import { computed, ref } from 'vue'
-
+import { useFormattedDate } from '@/composable/useFormattedDate'
 export default {
   name: 'BookItem',
   props: {
@@ -45,9 +45,9 @@ export default {
     const book = ref(props.book)
 
     const ratingBageClass = computed(() => {
-      if (book.value.rating > 7) {
+      if (book.value.raiting > 7) {
         return 'bg-success'
-      } else if (book.value.rating > 4) {
+      } else if (book.value.raiting > 4) {
         return 'bg-warning'
       } else {
         return 'bg-danger'
@@ -61,7 +61,23 @@ export default {
       return book.value.description
     })
 
-    return { ratingBageClass, truncatedText }
+    const updateTime = book.value.updatedAt
+    const { formattedDate } = useFormattedDate(updateTime)
+    // // Tarih saat
+    // const updateTime = book.value.updatedAt
+    // const date = new Date(updateTime)
+
+    // const formattedDate = new Intl.DateTimeFormat('tr-TR', {
+    //   year: 'numeric',
+    //   month: 'short',
+    //   day: 'numeric',
+    //   hour: '2-digit',
+    //   minute: '2-digit'
+    // }).format(date)
+
+    // "4 Mar 2024, 01:36"
+
+    return { ratingBageClass, truncatedText, formattedDate }
   }
 }
 </script>
