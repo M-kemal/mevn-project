@@ -75,7 +75,7 @@ export default {
     },
     autoPlayInterval: {
       type: Number,
-      default: '3000'
+      default: 3000
     }
   },
   setup(props) {

@@ -6,6 +6,12 @@ export const useBookStore = defineStore('bookStore', {
     books: [],
     isLoading: false
   }),
+  getters: {
+    selectedBook: (state) => {
+      // _id mongo db de o şekilde verdiği için.
+      return (id) => state.books.find((book) => book._id === id);
+    }
+  },
   actions: {
     async fetchBooks() {
       this.isLoading = true;

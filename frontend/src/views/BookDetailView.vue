@@ -126,7 +126,11 @@
     </div>
   </div>
   <div class="container" v-else>
-    <p>Book Detail is Loading....</p>
+    <div class="d-flex justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -136,6 +140,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useFormattedDate } from '@/composable/useFormattedDate';
 // import db from '@/db.js'
 import { onMounted, ref, watch } from 'vue';
+import { useBookStore } from '@/stores/bookStore.js';
 export default {
   name: 'BookDetailView',
   setup() {
@@ -143,29 +148,20 @@ export default {
 
     const route = useRoute();
 
-    // const bookId = route.params.id
-
-    // onMounted(() => {
-    //   book.value = db.find((b) => b.id === parseInt(bookId))
-    // })
-
     const router = useRouter();
 
     const loading = ref(true);
 
-    const fetchABook = async () => {
+    const bookStore = useBookStore();
+
+    const selectBook = () => {
       const bookId = route.params.id;
-      try {
-        const response = await fetch(`http://localhost:3000/api/v1/books/${bookId}`);
-        const data = await response.json();
-        console.log('DATA', data);
-        book.value = data;
-        loading.value = false;
-      } catch (error) {}
+      book.value = bookStore.selectedBook(bookId);
+      loading.value = false;
     };
 
     onMounted(() => {
-      fetchABook();
+      selectBook();
     });
 
     const formattedUpdateDate = ref('');

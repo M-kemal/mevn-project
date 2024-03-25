@@ -6,6 +6,8 @@ import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
 
+import { useBookStore } from './stores/bookStore.js';
+
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core';
 
@@ -18,10 +20,16 @@ import { faThumbsUp as farThumbsUp, faPenToSquare } from '@fortawesome/free-regu
 /* add icons to the library */
 library.add(faArrowLeft, faThumbsUp, faPenToSquare, faTrash, farThumbsUp);
 
-const app = createApp(App);
-app.component('font-awesome-icon', FontAwesomeIcon);
+const pinia = createPinia();
 
-app.use(createPinia());
-app.use(router);
+const bookStore = useBookStore(pinia);
 
-app.mount('#app');
+bookStore.fetchBooks().then(() => {
+  const app = createApp(App);
+  app.component('font-awesome-icon', FontAwesomeIcon);
+
+  app.use(pinia);
+  app.use(router);
+
+  app.mount('#app');
+});

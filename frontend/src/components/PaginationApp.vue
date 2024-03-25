@@ -26,11 +26,11 @@
   </nav>
 </template>
 
-<script>
+<!-- <script>
 import { ref, watchEffect } from 'vue';
 
 export default {
-  name: 'Pagination',
+  name: 'PaginationApp',
   props: {
     currentPage: {
       type: Number,
@@ -60,6 +60,32 @@ export default {
     };
 
     return { goToPage, currentPage, totalPages };
+  }
+};
+</script> -->
+
+<script>
+export default {
+  name: 'PaginationApp',
+  props: {
+    currentPage: {
+      type: Number,
+      required: true
+    },
+    totalPages: {
+      type: Number,
+      required: true
+    }
+  },
+  emits: ['page-changed'],
+  setup(props, { emit }) {
+    const goToPage = (page) => {
+      if (page >= 1 && page <= props.totalPages) {
+        emit('page-changed', page);
+      }
+    };
+
+    return { goToPage };
   }
 };
 </script>

@@ -82,7 +82,7 @@ import CarouselApp from '@/components/widgets/CarouselApp.vue';
 import hero_1 from '@/assets/images/hero_1.jpg';
 import hero_2 from '@/assets/images/hero_2.jpg';
 import hero_3 from '@/assets/images/hero_3.jpg';
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import { useBookStore } from '@/stores/bookStore.js';
 
@@ -132,11 +132,9 @@ export default {
 
     const isLoading = computed(() => bookPiniaStore.isLoading);
 
-    onMounted(async () => {
-      await bookPiniaStore.fetchBooks(); // fetchBooks metodunu çağır
-    });
-
-    console.log(bookPiniaStore);
+    // onMounted(async () => {
+    //   await bookPiniaStore.fetchBooks(); // fetchBooks metodunu çağır
+    // });
 
     const selectedFilter = ref('latest');
 

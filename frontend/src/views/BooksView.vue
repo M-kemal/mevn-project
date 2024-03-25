@@ -8,14 +8,18 @@
         </div>
       </div>
       <BookList v-else :books="paginatedBook" />
-      <Pagination :currentPage="currentPage" :totalPages="totalPages" @page-changed="updatePage" />
+      <PaginationApp
+        :currentPage="currentPage"
+        :totalPages="totalPages"
+        @page-changed="updatePage"
+      />
     </div>
   </section>
 </template>
 
 <script>
 import BookList from '@/components/BookList.vue';
-import Pagination from '@/components/Pagination.vue';
+import PaginationApp from '@/components/PaginationApp.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 // import books from '@/db.js'
 import { computed, ref } from 'vue';
@@ -72,7 +76,7 @@ export default {
       isLoading
     };
   },
-  components: { SectionHeader, BookList, Pagination }
+  components: { SectionHeader, BookList, PaginationApp }
 };
 </script>
 
