@@ -31,7 +31,12 @@
           </div>
         </div>
         <div class="col-md-8">
-          <div class="accordion">
+          <div v-if="isLoading" class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <div v-else class="accordion">
             <div class="accordion-item" v-for="(book, index) in filteredBook" :key="index">
               <h2 class="accordion-header">
                 <button
@@ -77,9 +82,10 @@ import CarouselApp from '@/components/widgets/CarouselApp.vue';
 import hero_1 from '@/assets/images/hero_1.jpg';
 import hero_2 from '@/assets/images/hero_2.jpg';
 import hero_3 from '@/assets/images/hero_3.jpg';
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 import { useBookStore } from '@/stores/bookStore.js';
+
 export default {
   name: 'HomeView',
   setup() {
@@ -124,6 +130,12 @@ export default {
 
     const bookPiniaStore = useBookStore();
 
+    const isLoading = computed(() => bookPiniaStore.isLoading);
+
+    onMounted(async () => {
+      await bookPiniaStore.fetchBooks(); // fetchBooks metodunu çağır
+    });
+
     console.log(bookPiniaStore);
 
     const selectedFilter = ref('latest');
@@ -161,7 +173,8 @@ export default {
       selectFilter,
       filteredBook,
       openAccordionIndex,
-      toggleAccordion
+      toggleAccordion,
+      isLoading
     };
   },
   components: { CarouselApp, SectionHeader }
