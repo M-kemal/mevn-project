@@ -79,6 +79,7 @@ import hero_2 from '@/assets/images/hero_2.jpg';
 import hero_3 from '@/assets/images/hero_3.jpg';
 import { computed, ref } from 'vue';
 import SectionHeader from '@/components/SectionHeader.vue';
+import { useBookStore } from '@/stores/bookStore.js';
 export default {
   name: 'HomeView',
   setup() {
@@ -106,20 +107,24 @@ export default {
       }
     ]);
 
-    const books = ref([]);
+    // const books = ref([]);
 
-    const fetchBooks = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/api/v1/books');
-        const data = await response.json();
-        books.value = data;
-        console.log(books.value);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    // const fetchBooks = async () => {
+    //   try {
+    //     const response = await fetch('http://localhost:3000/api/v1/books');
+    //     const data = await response.json();
+    //     books.value = data;
+    //     console.log(books.value);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
 
-    fetchBooks();
+    // fetchBooks();
+
+    const bookPiniaStore = useBookStore();
+
+    console.log(bookPiniaStore);
 
     const selectedFilter = ref('latest');
 
@@ -128,7 +133,7 @@ export default {
     };
 
     const filteredBook = computed(() => {
-      const copiedBooks = [...books.value];
+      const copiedBooks = [...bookPiniaStore.books];
 
       if (selectedFilter.value === 'latest') {
         return copiedBooks
