@@ -73,12 +73,12 @@
 </template>
 
 <script>
-import CarouselApp from '@/components/widgets/CarouselApp.vue'
-import hero_1 from '@/assets/images/hero_1.jpg'
-import hero_2 from '@/assets/images/hero_2.jpg'
-import hero_3 from '@/assets/images/hero_3.jpg'
-import { computed, ref } from 'vue'
-import SectionHeader from '@/components/SectionHeader.vue'
+import CarouselApp from '@/components/widgets/CarouselApp.vue';
+import hero_1 from '@/assets/images/hero_1.jpg';
+import hero_2 from '@/assets/images/hero_2.jpg';
+import hero_3 from '@/assets/images/hero_3.jpg';
+import { computed, ref } from 'vue';
+import SectionHeader from '@/components/SectionHeader.vue';
 export default {
   name: 'HomeView',
   setup() {
@@ -104,46 +104,51 @@ export default {
         description:
           'Neque orro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.'
       }
-    ])
+    ]);
 
-    const books = ref([])
+    const books = ref([]);
 
     const fetchBooks = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/v1/books')
-        const data = await response.json()
-        books.value = data
-        console.log(books.value)
-      } catch (error) {}
-    }
+        const response = await fetch('http://localhost:3000/api/v1/books');
+        const data = await response.json();
+        books.value = data;
+        console.log(books.value);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-    fetchBooks()
+    fetchBooks();
 
-    const selectedFilter = ref('latest')
+    const selectedFilter = ref('latest');
 
     const selectFilter = (filter) => {
-      selectedFilter.value = filter
-    }
+      selectedFilter.value = filter;
+    };
 
     const filteredBook = computed(() => {
-      const copiedBooks = [...books.value]
+      const copiedBooks = [...books.value];
 
       if (selectedFilter.value === 'latest') {
-        return copiedBooks.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 4)
+        return copiedBooks
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 4);
       } else if (selectedFilter.value === 'best') {
-        return copiedBooks.sort((a, b) => b.raiting - a.raiting).slice(0, 4)
+        return copiedBooks.sort((a, b) => b.raiting - a.raiting).slice(0, 4);
       }
-    })
+      return [];
+    });
 
-    const openAccordionIndex = ref(0)
+    const openAccordionIndex = ref(0);
 
     const toggleAccordion = (index) => {
       if (openAccordionIndex.value === index) {
-        openAccordionIndex.value = -1
+        openAccordionIndex.value = -1;
       } else {
-        openAccordionIndex.value = index
+        openAccordionIndex.value = index;
       }
-    }
+    };
 
     return {
       carouselItems,
@@ -152,10 +157,10 @@ export default {
       filteredBook,
       openAccordionIndex,
       toggleAccordion
-    }
+    };
   },
   components: { CarouselApp, SectionHeader }
-}
+};
 </script>
 
 <style scoped>

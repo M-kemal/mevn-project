@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import { RouterLink } from 'vue-router'
-import BookItem from './BookItem.vue'
+import { RouterLink } from 'vue-router';
+import BookItem from './BookItem.vue';
 
 export default {
   name: 'BookList',
@@ -22,10 +22,10 @@ export default {
     }
   },
   setup() {
-    return {}
+    return {};
   },
   components: { BookItem, RouterLink }
-}
+};
 </script>
 
 <style></style>

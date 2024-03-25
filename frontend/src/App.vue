@@ -5,15 +5,15 @@
 </template>
 
 <script>
-import NavBar from './components/NavBar.vue'
-import TheFooter from './components/TheFooter.vue'
+import NavBar from './components/NavBar.vue';
+import TheFooter from './components/TheFooter.vue';
 
 export default {
   setup() {
-    return {}
+    return {};
   },
   components: { NavBar, TheFooter }
-}
+};
 </script>
 
 <style>

@@ -44,21 +44,21 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { reactive } from 'vue';
 
 export default {
   setup() {
     const formData = reactive({
       email: '',
       password: ''
-    })
+    });
 
     const submitForm = () => {
-      console.log('login formData', formData)
-    }
-    return { formData, submitForm }
+      console.log('login formData', formData);
+    };
+    return { formData, submitForm };
   }
-}
+};
 </script>
 
 <style scoped></style>

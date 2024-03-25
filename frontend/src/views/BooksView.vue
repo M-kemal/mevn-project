@@ -9,48 +9,48 @@
 </template>
 
 <script>
-import BookList from '@/components/BookList.vue'
-import Pagination from '@/components/Pagination.vue'
-import SectionHeader from '@/components/SectionHeader.vue'
+import BookList from '@/components/BookList.vue';
+import Pagination from '@/components/Pagination.vue';
+import SectionHeader from '@/components/SectionHeader.vue';
 // import books from '@/db.js'
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 export default {
   name: 'BooksView',
   setup() {
-    const books = ref([])
+    const books = ref([]);
 
     const fetchBooks = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/v1/books')
-        const data = await response.json()
-        books.value = data
-        console.log(books.value)
+        const response = await fetch('http://localhost:3000/api/v1/books');
+        const data = await response.json();
+        books.value = data;
+        console.log(books.value);
       } catch (error) {}
-    }
+    };
 
-    fetchBooks()
+    fetchBooks();
 
-    const currentPage = ref(1)
-    const itemsPerPage = ref(8)
+    const currentPage = ref(1);
+    const itemsPerPage = ref(8);
 
     const totalPages = computed(() => {
-      return Math.ceil(books.value.length / itemsPerPage.value)
-    })
+      return Math.ceil(books.value.length / itemsPerPage.value);
+    });
 
     const paginatedBook = computed(() => {
-      const startIndex = (currentPage.value - 1) * itemsPerPage.value
-      const endIndex = startIndex + itemsPerPage.value
-      return books.value.slice(startIndex, endIndex)
-    })
+      const startIndex = (currentPage.value - 1) * itemsPerPage.value;
+      const endIndex = startIndex + itemsPerPage.value;
+      return books.value.slice(startIndex, endIndex);
+    });
 
     const updatePage = (page) => {
-      currentPage.value = page
-    }
+      currentPage.value = page;
+    };
 
-    return { books, currentPage, itemsPerPage, totalPages, paginatedBook, updatePage }
+    return { books, currentPage, itemsPerPage, totalPages, paginatedBook, updatePage };
   },
   components: { SectionHeader, BookList, Pagination }
-}
+};
 </script>
 
 <style>

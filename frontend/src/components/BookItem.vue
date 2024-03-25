@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import { computed, ref } from 'vue'
-import { useFormattedDate } from '@/composable/useFormattedDate'
+import { computed, ref } from 'vue';
+import { useFormattedDate } from '@/composable/useFormattedDate';
 export default {
   name: 'BookItem',
   props: {
@@ -42,27 +42,27 @@ export default {
     }
   },
   setup(props) {
-    const book = ref(props.book)
+    const book = ref(props.book);
 
     const ratingBageClass = computed(() => {
       if (book.value.raiting > 7) {
-        return 'bg-success'
+        return 'bg-success';
       } else if (book.value.raiting > 4) {
-        return 'bg-warning'
+        return 'bg-warning';
       } else {
-        return 'bg-danger'
+        return 'bg-danger';
       }
-    })
+    });
 
     const truncatedText = computed(() => {
       if (book.value.description.length > 80) {
-        return book.value.description.slice(0, 80) + '...'
+        return book.value.description.slice(0, 80) + '...';
       }
-      return book.value.description
-    })
+      return book.value.description;
+    });
 
-    const updateTime = book.value.updatedAt
-    const { formattedDate } = useFormattedDate(updateTime)
+    const updateTime = book.value.updatedAt;
+    const { formattedDate } = useFormattedDate(updateTime);
     // // Tarih saat
     // const updateTime = book.value.updatedAt
     // const date = new Date(updateTime)
@@ -77,9 +77,9 @@ export default {
 
     // "4 Mar 2024, 01:36"
 
-    return { ratingBageClass, truncatedText, formattedDate }
+    return { ratingBageClass, truncatedText, formattedDate };
   }
-}
+};
 </script>
 
 <style scoped>

@@ -5,16 +5,16 @@
 </template>
 
 <script>
-import SectionHeader from '@/components/SectionHeader.vue'
+import SectionHeader from '@/components/SectionHeader.vue';
 
 export default {
   setup() {
-    const title = 'İletişim Bilgileri'
+    const title = 'İletişim Bilgileri';
 
-    return { title }
+    return { title };
   },
   components: { SectionHeader }
-}
+};
 </script>
 
 <style lang="scss" scoped></style>

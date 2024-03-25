@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect } from 'vue';
 
 export default {
   name: 'Pagination',
@@ -43,25 +43,25 @@ export default {
   },
   emits: ['page-changed'],
   setup(props, { emit }) {
-    const currentPage = ref(props.currentPage)
-    const totalPages = ref(props.totalPages)
+    const currentPage = ref(props.currentPage);
+    const totalPages = ref(props.totalPages);
 
     watchEffect(() => {
-      currentPage.value = props.currentPage
-      totalPages.value = props.totalPages
-    })
+      currentPage.value = props.currentPage;
+      totalPages.value = props.totalPages;
+    });
 
     const goToPage = (page) => {
       // currentPage.value = page
       // emit('page-changed', page)
       if (page >= 1 && page <= totalPages.value) {
-        emit('page-changed', page)
+        emit('page-changed', page);
       }
-    }
+    };
 
-    return { goToPage, currentPage, totalPages }
+    return { goToPage, currentPage, totalPages };
   }
-}
+};
 </script>
 
 <style>

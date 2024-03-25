@@ -91,6 +91,6 @@ const books = [
     rating: 4.8,
     uploadDate: '19 Jan 2021'
   }
-]
+];
 
-export default books
+export default books;

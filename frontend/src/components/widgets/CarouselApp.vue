@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 export default {
   name: 'CarouselApp',
@@ -79,42 +79,42 @@ export default {
     }
   },
   setup(props) {
-    const currentItemIndex = ref(0)
+    const currentItemIndex = ref(0);
 
     const selectedItem = computed(() => {
-      return props.items[currentItemIndex.value]
-    })
+      return props.items[currentItemIndex.value];
+    });
 
     const nextItem = () => {
-      currentItemIndex.value = (currentItemIndex.value + 1) % props.items.length
-    }
+      currentItemIndex.value = (currentItemIndex.value + 1) % props.items.length;
+    };
     const prevItem = () => {
       currentItemIndex.value =
-        (currentItemIndex.value - 1 + props.items.length) % props.items.length
-    }
+        (currentItemIndex.value - 1 + props.items.length) % props.items.length;
+    };
 
-    let autoPlayTimer = null
+    let autoPlayTimer = null;
 
     const startAutoPlay = () => {
       // Zaten zamanlayıcı varsa durdur
-      if (autoPlayTimer) clearInterval(autoPlayTimer)
+      if (autoPlayTimer) clearInterval(autoPlayTimer);
       autoPlayTimer = setInterval(() => {
-        nextItem()
-      }, props.autoPlayInterval)
-    }
+        nextItem();
+      }, props.autoPlayInterval);
+    };
 
     onMounted(() => {
-      startAutoPlay()
-    })
+      startAutoPlay();
+    });
 
     onUnmounted(() => {
-      if (autoPlayTimer) clearInterval(autoPlayTimer)
+      if (autoPlayTimer) clearInterval(autoPlayTimer);
       //Component yok edildiğinde zamanlayıcıyı durdur
-    })
+    });
 
-    return { currentItemIndex, nextItem, prevItem, selectedItem }
+    return { currentItemIndex, nextItem, prevItem, selectedItem };
   }
-}
+};
 </script>
 
 <style scoped>

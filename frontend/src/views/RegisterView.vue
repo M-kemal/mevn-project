@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { reactive } from 'vue'
+import { reactive } from 'vue';
 
 export default {
   setup() {
@@ -77,15 +77,15 @@ export default {
       userName: '',
       email: '',
       password: ''
-    })
+    });
 
     const submitForm = () => {
-      console.log('formData', formData)
-    }
+      console.log('formData', formData);
+    };
 
-    return { formData, submitForm }
+    return { formData, submitForm };
   }
-}
+};
 </script>
 
 <style scoped></style>
