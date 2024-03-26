@@ -38,6 +38,12 @@ export const useAuthStore = defineStore('authStore', {
       } catch (error) {
         console.error('Error at getting login', error);
       }
+    },
+
+    logout() {
+      this.user = null;
+      localStorage.removeItem('user');
+      location.reload();
     }
   }
 });

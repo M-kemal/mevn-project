@@ -57,7 +57,7 @@ router.beforeEach((to, from, next) => {
   const isLoggedIn = localStorage.getItem('user');
 
   if (requiresAuth && !isLoggedIn) {
-    next({ name: 'login' });
+    next({ name: 'home' });
   } else {
     next();
   }

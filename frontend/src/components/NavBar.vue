@@ -18,6 +18,9 @@
         <li class="nav-item" v-if="!isLoggedIn">
           <RouterLink class="nav-link" :to="{ name: 'register' }">Register</RouterLink>
         </li>
+        <li class="nav-item" v-if="isLoggedIn">
+          <button class="nav-link" @click="logoutUser">Log out</button>
+        </li>
       </ul>
     </div>
   </div>
@@ -32,7 +35,11 @@ export default {
 
     const isLoggedIn = computed(() => authStore.isLoggedIn);
 
-    return { isLoggedIn };
+    const logoutUser = () => {
+      authStore.logout();
+    };
+
+    return { isLoggedIn, logoutUser };
   }
 };
 </script>

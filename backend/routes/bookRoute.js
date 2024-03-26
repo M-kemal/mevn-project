@@ -1,5 +1,6 @@
 import express from "express";
 import * as bookController from "../controllers/bookController.js";
+import * as authMiddleWare from "../middlewares/authMiddleWare.js";
 
 const router = express.Router();
 
@@ -11,6 +12,6 @@ router
   .route("/:id")
   .get(bookController.getABook)
   .put(bookController.updateBook)
-  .delete(bookController.deleteBook);
+  .delete(authMiddleWare.authenticateUser, bookController.deleteBook);
 
 export default router;

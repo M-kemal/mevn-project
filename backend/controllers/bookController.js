@@ -108,6 +108,8 @@ const updateBook = async (req, res) => {
 };
 
 const deleteBook = async (req, res) => {
+  console.log("req.user", req.user);
+
   const { id } = req.params;
 
   // if (!mongoose.Types.ObjectId.isValid(id)) {
