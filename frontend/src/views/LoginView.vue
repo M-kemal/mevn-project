@@ -45,7 +45,7 @@
 
 <script>
 import { reactive } from 'vue';
-
+import { useAuthStore } from '@/stores/authStore';
 export default {
   setup() {
     const formData = reactive({
@@ -53,9 +53,20 @@ export default {
       password: ''
     });
 
-    const submitForm = () => {
+    const loginAuth = useAuthStore();
+
+    const submitForm = async () => {
+      try {
+        await loginAuth.login(formData);
+        console.log('Login successfull!');
+      } catch (error) {
+        console.log('Login failed.');
+      }
       console.log('login formData', formData);
+      formData.email = '';
+      formData.password = '';
     };
+
     return { formData, submitForm };
   }
 };
