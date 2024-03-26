@@ -3,7 +3,7 @@
     <div class="container">
       <form @submit.prevent="submitForm">
         <div class="row justify-content-center">
-          <!-- Username Field (Medium and Larger Screens) -->
+          <!-- n Field (Medium and Larger Screens) -->
           <div class="col-md-6 col-8 mb-3">
             <label for="username" class="form-label">Username</label>
             <!--* Strandart two way data binding -->
@@ -22,7 +22,7 @@
               id="username"
               name="username"
               required
-              v-model.trim="formData.userName"
+              v-model.trim="formData.username"
             />
           </div>
         </div>
@@ -70,17 +70,24 @@
 
 <script>
 import { reactive } from 'vue';
-
+import { useAuthStore } from '@/stores/authStore';
 export default {
   setup() {
     const formData = reactive({
-      userName: '',
+      n: '',
       email: '',
       password: ''
     });
 
-    const submitForm = () => {
-      console.log('formData', formData);
+    const registerAuth = useAuthStore();
+
+    const submitForm = async () => {
+      try {
+        await registerAuth.register(formData);
+        console.log('Registiration successfull!');
+      } catch (error) {
+        console.log('Registiration failed.');
+      }
     };
 
     return { formData, submitForm };

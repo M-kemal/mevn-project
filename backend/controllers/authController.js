@@ -14,6 +14,8 @@ const register = async (req, res) => {
 
     const newUser = await User.create(req.body);
 
+    newUser.password = undefined;
+
     return res
       .status(201)
       .json({ message: "User created succesfull", user: newUser });
