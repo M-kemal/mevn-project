@@ -7,6 +7,7 @@ import App from './App.vue';
 import router from './router';
 
 import { useBookStore } from './stores/bookStore.js';
+import { useAuthStore } from './stores/authStore';
 
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -21,6 +22,13 @@ import { faThumbsUp as farThumbsUp, faPenToSquare } from '@fortawesome/free-regu
 library.add(faArrowLeft, faThumbsUp, faPenToSquare, faTrash, farThumbsUp);
 
 const pinia = createPinia();
+
+const storedUser = localStorage.getItem('user');
+
+if (storedUser) {
+  const userData = JSON.parse(storedUser);
+  useAuthStore(pinia).user = userData;
+}
 
 const bookStore = useBookStore(pinia);
 

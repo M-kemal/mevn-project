@@ -71,20 +71,24 @@
 <script>
 import { reactive } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
+import { useRouter } from 'vue-router';
 export default {
   setup() {
     const formData = reactive({
-      n: '',
+      username: '',
       email: '',
       password: ''
     });
 
     const registerAuth = useAuthStore();
 
+    const router = useRouter();
+
     const submitForm = async () => {
       try {
         await registerAuth.register(formData);
-        console.log('Registiration successfull!');
+        router.push('/login');
+        // console.log('Registiration successfull!');
       } catch (error) {
         console.log('Registiration failed.');
       }

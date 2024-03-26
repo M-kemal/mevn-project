@@ -35,7 +35,7 @@
         <!-- Submit Button -->
         <div class="row justify-content-center">
           <div class="col-md-6 col-8 mb-3">
-            <button type="submit" class="btn btn-primary w-100">Register</button>
+            <button type="submit" class="btn btn-primary w-100">Log in</button>
           </div>
         </div>
       </form>
@@ -46,6 +46,7 @@
 <script>
 import { reactive } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
+import { useRouter } from 'vue-router';
 export default {
   setup() {
     const formData = reactive({
@@ -54,11 +55,13 @@ export default {
     });
 
     const loginAuth = useAuthStore();
+    const router = useRouter();
 
     const submitForm = async () => {
       try {
         await loginAuth.login(formData);
-        console.log('Login successfull!');
+        // console.log('Login successfull!');
+        router.push('/dashboard');
       } catch (error) {
         console.log('Login failed.');
       }
