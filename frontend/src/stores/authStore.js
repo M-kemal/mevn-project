@@ -14,17 +14,15 @@ export const useAuthStore = defineStore('authStore', {
 
   actions: {
     async register(newUserData) {
-      console.log('newUserData', newUserData);
       try {
         const response = await axios.post(
           'http://localhost:3000/api/v1/auth/register',
           newUserData
         );
-        // console.log('response', response);
         return response.data;
       } catch (error) {
-        // console.error('Error at getting user', error);
-        throw Error;
+        console.log(error);
+        throw error.response.data;
       }
     },
 
