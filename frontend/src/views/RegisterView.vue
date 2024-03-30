@@ -112,9 +112,11 @@
 import { computed, reactive, ref } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import { useRouter } from 'vue-router';
-
+import { useToast } from 'vue-toastification';
 export default {
   setup() {
+    const toast = useToast();
+
     const formData = reactive({
       username: '',
       email: '',
@@ -134,7 +136,16 @@ export default {
     const submitForm = async () => {
       try {
         await registerAuth.register(formData);
-        router.push('/login');
+        toast.success('You will be redirected to the login page.', {
+          position: 'top-right',
+          timeout: 3500,
+
+          closeButton: 'button',
+          icon: true
+        });
+        setTimeout(() => {
+          router.push('/login');
+        }, 4000);
         // console.log('Registiration successfull!');
       } catch (data) {
         const { error } = data;
@@ -175,32 +186,11 @@ export default {
       isPasswordValid,
       isFormValid,
       existingEmail,
-      showGenericWarningMessage
+      showGenericWarningMessage,
+      toast
     };
   }
 };
 </script>
 
-<style scoped>
-.form-control {
-  border-radius: 25px;
-  height: 48px;
-}
-
-.form-control:focus {
-  box-shadow: none;
-}
-
-.btn-primary {
-  border-radius: 25px;
-  height: 48px;
-  background-color: #44b89d;
-  border: 1px solid #44b89d;
-}
-
-.btn-primary:hover {
-  background-color: #fff;
-  color: #44b89d;
-  transition: all 0.3s ease;
-}
-</style>
+<style scoped></style>

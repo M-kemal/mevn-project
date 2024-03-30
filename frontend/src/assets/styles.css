@@ -21,3 +21,25 @@ a {
   display: flex;
   align-items: center;
 }
+
+.form-control {
+  border-radius: 25px;
+  height: 48px;
+}
+
+.form-control:focus {
+  box-shadow: none !important;
+}
+
+.btn-primary {
+  border-radius: 25px;
+  height: 48px;
+  background-color: #44b89d !important;
+  border: 1px solid #44b89d !important;
+}
+
+.btn-primary:hover {
+  background-color: #fff !important;
+  color: #44b89d !important;
+  transition: all 0.3s ease;
+}

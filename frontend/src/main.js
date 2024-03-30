@@ -9,6 +9,9 @@ import router from './router';
 import { useBookStore } from './stores/bookStore.js';
 import { useAuthStore } from './stores/authStore';
 
+import Toast from 'vue-toastification';
+import 'vue-toastification/dist/index.css';
+
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core';
 
@@ -38,6 +41,7 @@ bookStore.fetchBooks().then(() => {
 
   app.use(pinia);
   app.use(router);
+  app.use(Toast);
 
   app.mount('#app');
 });
