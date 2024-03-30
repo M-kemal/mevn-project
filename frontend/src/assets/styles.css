@@ -36,6 +36,7 @@ a {
   height: 48px;
   background-color: #44b89d !important;
   border: 1px solid #44b89d !important;
+  min-width: 175px;
 }
 
 .btn-primary:hover {
