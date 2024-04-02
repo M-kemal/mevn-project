@@ -120,11 +120,15 @@
 <script>
 import { defineComponent, onMounted, reactive, ref } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
+import { useUserStore } from '@/stores/userStore';
+import { useToast } from 'vue-toastification';
 export default defineComponent({
   name: 'DashboardView',
   setup() {
-    const { user } = useAuthStore();
-
+    const toast = useToast();
+    const authStore = useAuthStore();
+    const { user, logout } = authStore;
+    const userStore = useUserStore();
     const activeTab = ref('general');
 
     const editMode = ref(false);
@@ -143,8 +147,24 @@ export default defineComponent({
     const toggleEditMode = () => {
       editMode.value = !editMode.value;
     };
-    const saveUserInfo = () => {
-      console.log('Save user info feild.');
+    const saveUserInfo = async () => {
+      // console.log('Save user info feild.');
+      try {
+        await userStore.updateUserDetails(userInfo);
+
+        toast.success('Please login with new details', {
+          position: 'top-right',
+          timeout: 3500,
+
+          closeButton: 'button',
+          icon: true
+        });
+        setTimeout(() => {
+          logout();
+        }, 4000);
+      } catch (error) {
+        console.log(error);
+      }
     };
     const cancelEditMode = () => {
       editMode.value = false;
