@@ -18,11 +18,10 @@ const bookSchema = new mongoose.Schema(
       type: Number,
       min: 1,
     },
-    raiting: {
-      type: Number,
+    uploader: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
       required: true,
-      min: 1,
-      max: 10,
     },
   },
   // timestamps iki adet alan ekleyecek bu alanlar oluşturacağımız created(oluşturulma zamanı) ve updated(güncellenme zamanı)

@@ -21,6 +21,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 /* import specific icons */
 import { faThumbsUp, faArrowLeft, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faThumbsUp as farThumbsUp, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
+import axios from 'axios';
 /* add icons to the library */
 library.add(faArrowLeft, faThumbsUp, faPenToSquare, faTrash, farThumbsUp);
 
@@ -31,6 +32,12 @@ const storedUser = localStorage.getItem('user');
 if (storedUser) {
   const userData = JSON.parse(storedUser);
   useAuthStore(pinia).user = userData;
+
+  const token = userData.token;
+
+  if (token) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  }
 }
 
 const bookStore = useBookStore(pinia);

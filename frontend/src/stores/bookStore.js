@@ -27,6 +27,19 @@ export const useBookStore = defineStore('bookStore', {
       } finally {
         this.isLoading = false;
       }
+    },
+    async addNewBook(newBook) {
+      console.log('newBook', newBook);
+      this.isLoading = true;
+      try {
+        const response = await axios.post('http://localhost:3000/api/v1/books', newBook);
+        console.log('newBook', response);
+        this.books.push(response.data.book);
+      } catch (error) {
+        console.error('Error at add new books', error);
+      } finally {
+        this.isLoading = false;
+      }
     }
   }
 });
