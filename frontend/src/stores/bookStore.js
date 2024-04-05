@@ -4,7 +4,8 @@ import { defineStore } from 'pinia';
 export const useBookStore = defineStore('bookStore', {
   state: () => ({
     books: [],
-    isLoading: false
+    isLoading: false,
+    userUploadedBooks: []
   }),
   getters: {
     selectedBook: (state) => {
@@ -28,6 +29,18 @@ export const useBookStore = defineStore('bookStore', {
         this.isLoading = false;
       }
     },
+
+    //kullanıcın dashboard'u
+    async fetchBooksByUploader() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/v1/books/uploader');
+        console.log('uploader', response);
+        this.userUploadedBooks = response.data;
+      } catch (error) {
+        console.error('Error at user uploaded books', error);
+      }
+    },
+
     async addNewBook(newBook) {
       console.log('newBook', newBook);
       this.isLoading = true;

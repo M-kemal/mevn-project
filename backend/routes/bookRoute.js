@@ -5,6 +5,10 @@ import * as authMiddleWare from "../middlewares/authMiddleWare.js";
 const router = express.Router();
 
 router
+  .route("/uploader")
+  .get(authMiddleWare.authenticateUser, bookController.getBooksByUploader);
+
+router
   .route("/")
   .get(bookController.getAllBooks)
   .post(authMiddleWare.authenticateUser, bookController.createABook);

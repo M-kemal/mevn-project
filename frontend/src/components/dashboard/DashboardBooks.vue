@@ -21,29 +21,30 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Gülün Adı</td>
-            <td>Umberto Eco</td>
-            <td style="max-width: 250px">
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque
-              laudantium.
-            </td>
-            <td>217</td>
-            <td class="text-center">
-              <font-awesome-icon
-                :icon="['far', 'pen-to-square']"
-                class="text-warning"
-                style="cursor: pointer"
-              />
-            </td>
-            <td class="text-center">
-              <font-awesome-icon
-                :icon="['fas', 'trash']"
-                class="text-danger"
-                style="cursor: pointer"
-              />
-            </td>
-          </tr>
+          <TransitionGroup name="list">
+            <tr v-for="book in userBooks" :key="book._id">
+              <td>{{ book.title }}</td>
+              <td>{{ book.author }}</td>
+              <td style="max-width: 250px">
+                {{ truncatedText(book.description) }}
+              </td>
+              <td>{{ book.pageNumber }}</td>
+              <td class="text-center">
+                <font-awesome-icon
+                  :icon="['far', 'pen-to-square']"
+                  class="text-warning"
+                  style="cursor: pointer"
+                />
+              </td>
+              <td class="text-center">
+                <font-awesome-icon
+                  :icon="['fas', 'trash']"
+                  class="text-danger"
+                  style="cursor: pointer"
+                />
+              </td>
+            </tr>
+          </TransitionGroup>
         </tbody>
       </table>
     </div>
@@ -129,13 +130,15 @@
 <script setup>
 import { useBookStore } from '@/stores/bookStore.js';
 import { Modal } from 'bootstrap';
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
+import { useToast } from 'vue-toastification';
 
 const modal = ref(null);
 
 const addEditModal = ref(null);
 
 const bookStore = useBookStore();
+const toast = useToast();
 
 const newBook = reactive({
   title: '',
@@ -147,13 +150,45 @@ const newBook = reactive({
 const addBook = async () => {
   try {
     await bookStore.addNewBook(newBook);
+
+    modal.value.hide();
+    newBook.value = {
+      title: '',
+      author: '',
+      description: '',
+      pageNumber: null
+    };
+
+    await bookStore.fetchBooksByUploader();
+
+    toast.success('New book added successfully ', {
+      position: 'top-right',
+      timeout: 1000,
+
+      closeButton: 'button',
+      icon: true
+    });
   } catch (error) {
     console.log(error);
   }
 };
 
+const userBooks = computed(() => {
+  return bookStore.userUploadedBooks
+    .slice()
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+});
+
+const truncatedText = (description) => {
+  if (description.length > 80) {
+    return description.slice(0, 80) + '...';
+  }
+  return description;
+};
+
 onMounted(() => {
   modal.value = new Modal(addEditModal.value);
+  bookStore.fetchBooksByUploader();
 });
 </script>
 
@@ -163,5 +198,16 @@ onMounted(() => {
   height: 48px;
   margin-right: 20px;
   min-width: 120px;
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 2s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(300px);
 }
 </style>
