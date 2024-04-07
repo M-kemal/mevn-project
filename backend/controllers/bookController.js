@@ -31,20 +31,9 @@ const getBooksByUploader = async (req, res) => {
 const getABook = async (req, res) => {
   console.log("PARAMS", req.params);
   const { id } = req.params;
-
-  // if (!mongoose.Types.ObjectId.isValid(id)) {
-  //   return res.status(400).json({ error: "Object id is not valid." });
-  // }
-
   if (isValidObjectId(id, res)) return;
 
   try {
-    // const book = await Book.findById(id);
-
-    // if (!book) {
-    //   return res.status(404).json({ error: "The book is not exist." });
-    // }
-
     const book = await findDocumentById(Book, id, res);
 
     if (!book) return;
@@ -57,7 +46,6 @@ const getABook = async (req, res) => {
 };
 
 const createABook = async (req, res) => {
-  // console.log(req.body);
   try {
     const { title, author, description, pageNumber } = req.body;
 
@@ -97,18 +85,9 @@ const updateBook = async (req, res) => {
   const { id } = req.params;
   const { title, author, description, pageNumber, raiting } = req.body;
 
-  // if (!mongoose.Types.ObjectId.isValid(id)) {
-  //   return res.status(400).json({ error: "Object id is not valid." });
-  // }
   if (isValidObjectId(id, res)) return;
 
   try {
-    // const book = await Book.findById(id);
-
-    // if (!book) {
-    //   return res.status(404).json({ error: "The book is not exist." });
-    // }
-
     const book = await findDocumentById(Book, id, res);
 
     if (!book) return;
@@ -129,23 +108,11 @@ const updateBook = async (req, res) => {
 };
 
 const deleteBook = async (req, res) => {
-  console.log("req.user", req.user);
-
   const { id } = req.params;
-
-  // if (!mongoose.Types.ObjectId.isValid(id)) {
-  //   return res.status(400).json({ error: "Object id is not valid." });
-  // }
 
   if (isValidObjectId(id, res)) return;
 
   try {
-    // const book = await Book.findById(id);
-
-    // if (!book) {
-    //   return res.status(404).json({ error: "The book is not exist." });
-    // }
-
     const book = await findDocumentById(Book, id, res);
 
     if (!book) return;

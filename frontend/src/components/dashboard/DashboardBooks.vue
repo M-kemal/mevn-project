@@ -20,32 +20,32 @@
             <th class="text-center">Delete</th>
           </tr>
         </thead>
-        <tbody>
-          <TransitionGroup name="list">
-            <tr v-for="book in userBooks" :key="book._id">
-              <td>{{ book.title }}</td>
-              <td>{{ book.author }}</td>
-              <td style="max-width: 250px">
-                {{ truncatedText(book.description) }}
-              </td>
-              <td>{{ book.pageNumber }}</td>
-              <td class="text-center">
-                <font-awesome-icon
-                  :icon="['far', 'pen-to-square']"
-                  class="text-warning"
-                  style="cursor: pointer"
-                />
-              </td>
-              <td class="text-center">
-                <font-awesome-icon
-                  :icon="['fas', 'trash']"
-                  class="text-danger"
-                  style="cursor: pointer"
-                />
-              </td>
-            </tr>
-          </TransitionGroup>
-        </tbody>
+
+        <TransitionGroup name="list" tag="Tbody">
+          <tr v-for="book in userBooks" :key="book._id">
+            <td>{{ book.title }}</td>
+            <td>{{ book.author }}</td>
+            <td style="max-width: 250px">
+              {{ truncatedText(book.description) }}
+            </td>
+            <td>{{ book.pageNumber }}</td>
+            <td class="text-center">
+              <font-awesome-icon
+                :icon="['far', 'pen-to-square']"
+                class="text-warning"
+                style="cursor: pointer"
+              />
+            </td>
+            <td class="text-center">
+              <font-awesome-icon
+                :icon="['fas', 'trash']"
+                class="text-danger"
+                style="cursor: pointer"
+                @click="deleteBook(book._id, book.title)"
+              />
+            </td>
+          </tr>
+        </TransitionGroup>
       </table>
     </div>
   </div>
@@ -138,7 +138,17 @@ const modal = ref(null);
 const addEditModal = ref(null);
 
 const bookStore = useBookStore();
-const toast = useToast();
+
+const showToast = (message, options) => {
+  const toast = useToast();
+
+  toast(message, {
+    position: 'top-right',
+    closeButton: 'button',
+    icon: true,
+    ...options
+  });
+};
 
 const newBook = reactive({
   title: '',
@@ -161,13 +171,7 @@ const addBook = async () => {
 
     await bookStore.fetchBooksByUploader();
 
-    toast.success('New book added successfully ', {
-      position: 'top-right',
-      timeout: 1000,
-
-      closeButton: 'button',
-      icon: true
-    });
+    showToast(`New book added successfully`, { type: 'success', timeout: 1000 });
   } catch (error) {
     console.error(error);
   }
@@ -190,6 +194,18 @@ onMounted(() => {
   modal.value = new Modal(addEditModal.value);
   bookStore.fetchBooksByUploader();
 });
+
+const deleteBook = async (bookId, bookTitle) => {
+  try {
+    await bookStore.deleteTheBook(bookId);
+
+    await bookStore.fetchBooksByUploader();
+
+    showToast(`${bookTitle} deleted successfully.`, { type: 'warning', timeout: 3000 });
+  } catch (error) {
+    console.error(error);
+  }
+};
 </script>
 
 <style scoped>
@@ -200,14 +216,21 @@ onMounted(() => {
   min-width: 120px;
 }
 
+.list-move, /* apply transition to moving elements */
 .list-enter-active,
 .list-leave-active {
-  transition: all 2s ease;
+  transition: all 0.5s ease;
 }
 
 .list-enter-from,
 .list-leave-to {
   opacity: 0;
   transform: translateX(300px);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.list-leave-active {
+  position: absolute;
 }
 </style>
