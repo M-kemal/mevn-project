@@ -49,7 +49,7 @@ export const useBookStore = defineStore('bookStore', {
         console.log('newBook', response);
         this.books.push(response.data.book);
       } catch (error) {
-        console.error('Error at add new books', error);
+        throw error.response.data;
       } finally {
         this.isLoading = false;
       }

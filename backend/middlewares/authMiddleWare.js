@@ -24,7 +24,14 @@ const authenticateUser = async (req, res, next) => {
     req.user = await user.findById(decodedToken.userId);
 
     next();
-  } catch (error) {}
+  } catch (error) {
+    console.log("error.name", error.name);
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Token has expired!" });
+    } else {
+      return res.status(500).json({ message: "Internal server error!" });
+    }
+  }
 };
 
 export { authenticateUser };

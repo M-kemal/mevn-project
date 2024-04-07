@@ -24,8 +24,40 @@ import { faThumbsUp as farThumbsUp, faPenToSquare } from '@fortawesome/free-regu
 import axios from 'axios';
 /* add icons to the library */
 library.add(faArrowLeft, faThumbsUp, faPenToSquare, faTrash, farThumbsUp);
+import { useToast } from 'vue-toastification';
+const toast = useToast();
+
+toast.success('New book added successfully ', {
+  position: 'top-right',
+  timeout: 1000,
+
+  closeButton: 'button',
+  icon: true
+});
 
 const pinia = createPinia();
+const authStore = useAuthStore(pinia);
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.log('error.response', error.response);
+    if (error.response && error.response.status === 401) {
+      // Display toast message
+      toast.error('Your token is expired, forwarding login page.', {
+        position: 'top-right',
+        timeout: 3000,
+        closeButton: 'button',
+        icon: true
+      });
+
+      setTimeout(() => {
+        authStore.logout();
+        router.push('/login');
+      }, 3000);
+    }
+  }
+);
 
 const storedUser = localStorage.getItem('user');
 
