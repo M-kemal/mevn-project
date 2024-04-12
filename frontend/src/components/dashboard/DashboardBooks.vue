@@ -2,7 +2,7 @@
   <!-- Button -->
   <div class="row mb-3">
     <div class="col text-end">
-      <button type="button" class="btn btn-primary" @click="modal.show()">Add Book</button>
+      <button type="button" class="btn btn-primary" @click="openAddModal">Add Book</button>
     </div>
   </div>
 
@@ -34,6 +34,7 @@
                 :icon="['far', 'pen-to-square']"
                 class="text-warning"
                 style="cursor: pointer"
+                @click="openEditModal(book)"
               />
             </td>
             <td class="text-center">
@@ -55,7 +56,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addModalLabel">Add Book</h5>
+          <h5 class="modal-title" id="addModalLabel">{{ modalTitle }}</h5>
           <button type="button" class="btn-close" aria-label="Close" @click="modal.hide()"></button>
         </div>
         <div class="modal-body mx-5">
@@ -65,7 +66,7 @@
               <span class="text-danger">*</span>
             </label>
             <input
-              v-model="newBook.title"
+              v-model="bookData.title"
               type="text"
               class="form-control"
               id="title"
@@ -79,7 +80,7 @@
               <span class="text-danger">*</span>
             </label>
             <input
-              v-model="newBook.author"
+              v-model="bookData.author"
               type="text"
               class="form-control"
               id="author"
@@ -98,7 +99,7 @@
               class="form-control"
               cols="30"
               rows="10"
-              v-model="newBook.description"
+              v-model="bookData.description"
             ></textarea>
           </div>
           <div class="col mb-3">
@@ -107,7 +108,7 @@
               <span class="text-danger">*</span>
             </label>
             <input
-              v-model="newBook.pageNumber"
+              v-model="bookData.pageNumber"
               type="number"
               class="form-control"
               id="numOfPages"
@@ -119,7 +120,7 @@
             <button type="button" class="btn btn-outline-secondary" @click="modal.hide()">
               Close
             </button>
-            <button @click="addBook" type="button" class="btn btn-primary">Save</button>
+            <button @click="saveBook" type="button" class="btn btn-primary">Save</button>
           </div>
         </div>
       </div>
@@ -127,17 +128,57 @@
   </div>
 </template>
 
-<script setup>
+<!-- <script setup>
 import { useBookStore } from '@/stores/bookStore.js';
 import { Modal } from 'bootstrap';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useToast } from 'vue-toastification';
+
+const modalTitle = ref('');
 
 const modal = ref(null);
 
 const addEditModal = ref(null);
 
 const bookStore = useBookStore();
+
+const bookData = reactive({
+  title: '',
+  author: '',
+  description: '',
+  pageNumber: null,
+  editedBookId: null
+});
+
+const saveBook = () => {
+  if (modalTitle.value === 'Add Book') {
+    addBook();
+  } else if (modalTitle.value === 'Edit Book') {
+    editBook();
+  }
+};
+
+const openAddModal = () => {
+  modalTitle.value = 'Add Book';
+
+  (bookData.title = ''),
+    (bookData.author = ''),
+    (bookData.description = ''),
+    (bookData.pageNumber = null);
+  modal.value.show();
+};
+
+const openEditModal = (existingBook) => {
+  modalTitle.value = 'Edit Book';
+
+  bookData.editedBookId = existingBook._id;
+  bookData.title = existingBook.title;
+  bookData.author = existingBook.author;
+  bookData.description = existingBook.description;
+  bookData.pageNumber = existingBook.pageNumber;
+
+  modal.value.show();
+};
 
 const showToast = (message, options) => {
   const toast = useToast();
@@ -150,19 +191,12 @@ const showToast = (message, options) => {
   });
 };
 
-const newBook = reactive({
-  title: '',
-  author: '',
-  description: '',
-  pageNumber: null
-});
-
 const addBook = async () => {
   try {
-    await bookStore.addNewBook(newBook);
+    await bookStore.addNewBook(bookData);
 
     modal.value.hide();
-    newBook.value = {
+    bookData.value = {
       title: '',
       author: '',
       description: '',
@@ -195,12 +229,118 @@ onMounted(() => {
   bookStore.fetchBooksByUploader();
 });
 
+const editBook = async () => {
+  try {
+    await bookStore.editTheBook(bookData.editedBookId, bookData);
+
+    await bookStore.fetchBooksByUploader();
+
+    modal.value.hide();
+
+    showToast(`The book edited successfully.`, { type: 'success', timeout: 3000 });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const deleteBook = async (bookId, bookTitle) => {
   try {
     await bookStore.deleteTheBook(bookId);
 
     await bookStore.fetchBooksByUploader();
 
+    showToast(`${bookTitle} deleted successfully.`, { type: 'warning', timeout: 3000 });
+  } catch (error) {
+    console.error(error);
+  }
+};
+</script> -->
+
+<script setup>
+import { useBookStore } from '@/stores/bookStore.js';
+import { Modal } from 'bootstrap';
+import { computed, onMounted, reactive, ref } from 'vue';
+import { useToast } from 'vue-toastification';
+
+const modalTitle = ref('');
+const modal = ref(null);
+const addEditModal = ref(null);
+const bookStore = useBookStore();
+const bookData = reactive({
+  title: '',
+  author: '',
+  description: '',
+  pageNumber: null,
+  editedBookId: null
+});
+
+// Hesaplanan özellik, kullanıcının yüklediği kitapları getiriyor
+const userBooks = computed(() =>
+  bookStore.userUploadedBooks.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+);
+
+// Açıklamayı kısaltma fonksiyonu
+const truncatedText = (description) =>
+  description.length > 80 ? `${description.slice(0, 80)}...` : description;
+
+// Bileşen yüklendiğinde modalı başlat ve kitapları yükle
+onMounted(() => {
+  modal.value = new Modal(addEditModal.value);
+  bookStore.fetchBooksByUploader();
+});
+
+// Kitap ekleme modalını açar
+const openAddModal = () => {
+  modalTitle.value = 'Add Book';
+  Object.assign(bookData, { title: '', author: '', description: '', pageNumber: null });
+  modal.value.show();
+};
+
+// Kitap düzenleme modalını açar
+const openEditModal = (existingBook) => {
+  modalTitle.value = 'Edit Book';
+  Object.assign(bookData, { ...existingBook, editedBookId: existingBook._id });
+  modal.value.show();
+};
+
+// Kitabı kaydetme veya düzenleme işlemini yönetir
+const saveBook = () => {
+  modalTitle.value === 'Add Book' ? addBook() : editBook();
+};
+
+// Toast mesajlarını göstermek için kullanılır
+const showToast = useToast();
+
+// Yeni kitap ekler
+const addBook = async () => {
+  try {
+    await bookStore.addNewBook(bookData);
+    modal.value.hide();
+    Object.assign(bookData, { title: '', author: '', description: '', pageNumber: null });
+    await bookStore.fetchBooksByUploader();
+    showToast('New book added successfully.', { type: 'success', timeout: 1000 });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Kitabı düzenler
+const editBook = async () => {
+  try {
+    await bookStore.editTheBook(bookData.editedBookId, bookData);
+    await bookStore.fetchBooksByUploader();
+    modal.value.hide();
+    showToast('Book edited successfully.', { type: 'success', timeout: 3000 });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Kitabı siler
+const deleteBook = async (bookId, bookTitle) => {
+  try {
+    await bookStore.deleteTheBook(bookId);
+    await bookStore.fetchBooksByUploader();
     showToast(`${bookTitle} deleted successfully.`, { type: 'warning', timeout: 3000 });
   } catch (error) {
     console.error(error);

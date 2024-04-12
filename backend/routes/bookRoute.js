@@ -15,7 +15,7 @@ router
 router
   .route("/:id")
   .get(bookController.getABook)
-  .put(bookController.updateBook)
+  .put(authMiddleWare.authenticateUser, bookController.updateBook)
   .delete(authMiddleWare.authenticateUser, bookController.deleteBook);
 
 export default router;

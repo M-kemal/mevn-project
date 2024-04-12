@@ -55,6 +55,32 @@ export const useBookStore = defineStore('bookStore', {
       }
     },
 
+    async editTheBook(bookId, bookData) {
+      try {
+        const response = await axios.put(`http://localhost:3000/api/v1/books/${bookId}`, bookData);
+        const updatedBookData = response.data.book;
+        const bookIndex = this.books.findIndex((book) => book._id === bookId);
+        if (bookIndex !== -1) {
+          this.books.splice(bookIndex, 1, updatedBookData);
+        }
+      } catch (error) {
+        console.error('Error occurred:', error);
+        if (error.response) {
+          // error.response var olduğunda yapılacak işlemler
+          if (error.response.data) {
+            console.error('Error details:', error.response.data);
+            throw new Error(error.response.data.message || 'An unexpected server error occurred');
+          } else {
+            throw new Error('Server responded with an error but no data');
+          }
+        } else {
+          // error.response yoksa
+          console.error('Unexpected error format:', error);
+          throw new Error('An unexpected error occurred');
+        }
+      }
+    },
+
     async deleteTheBook(bookId) {
       console.log('bookId', bookId);
       try {
