@@ -64,27 +64,32 @@
         </div>
       </div>
     </div>
-    <hr />
+    <hr v-if="userStore.isLoggedIn" />
     <div class="row mt-3">
       <div class="col-md-12">
         <div class="box">
-          <h3 style="color: var(--primary-color)">Comment The Book</h3>
-          <form @submit.prevent="addComment">
-            <!-- Comment Text Area -->
-            <div class="mb-3">
-              <textarea
-                id="comment"
-                class="form-control"
-                rows="4"
-                placeholder="Enter your comment"
-                required
-                v-model="commentContent"
-              ></textarea>
-            </div>
+          <div v-if="userStore.isLoggedIn">
+            <h3 style="color: var(--primary-color)">Comment The Book</h3>
+            <form @submit.prevent="addComment">
+              <!-- Comment Text Area -->
+              <div class="mb-3">
+                <textarea
+                  id="comment"
+                  class="form-control"
+                  rows="4"
+                  placeholder="Enter your comment"
+                  required
+                  v-model="commentContent"
+                ></textarea>
+              </div>
 
-            <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary">Comment</button>
-          </form>
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary">Comment</button>
+            </form>
+          </div>
+          <router-link v-else to="/login">
+            <p style="color: var(--secondary-color)">Log in to leave a comment</p>
+          </router-link>
         </div>
       </div>
     </div>
@@ -94,47 +99,20 @@
         <div class="box">
           <h3 style="color: var(--primary-color)">Comments</h3>
           <div>
-            <div class="card mb-4">
+            <div v-for="comment in commentsForBook" :key="comment._id" class="card mb-4">
               <div class="card-body">
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                  incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet,
-                  consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                  magna aliqua.
+                  {{ comment.content }}
                 </p>
 
                 <div class="d-flex justify-content-between">
                   <div class="d-flex flex-row align-items-center">
-                    <p class="small mb-0 ms-2">Username</p>
+                    <p class="small mb-0 ms-2">{{ comment.postedBy.username }}</p>
                   </div>
                   <div class="d-flex flex-row align-items-center" style="gap: 10px">
                     <p class="small text-muted mb-0">Upvote?</p>
                     <font-awesome-icon :icon="['far', 'thumbs-up']" />
                     <p class="small text-muted mb-0">3</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="card mb-4">
-              <div class="card-body">
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                  incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet,
-                  consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-                  magna aliqua.
-                </p>
-
-                <div class="d-flex justify-content-between">
-                  <div class="d-flex flex-row align-items-center">
-                    <p class="small mb-0 ms-2">Username</p>
-                  </div>
-                  <div class="d-flex flex-row align-items-center" style="gap: 10px">
-                    <p class="small mb-0">Upvoted</p>
-                    <font-awesome-icon
-                      :icon="['fas', 'thumbs-up']"
-                      style="color: var(--secondary-color)"
-                    />
-                    <p class="small text-muted mb-0">4</p>
                   </div>
                 </div>
               </div>
@@ -147,7 +125,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useBookStore } from '@/stores/bookStore.js';
 import { useAuthStore } from '@/stores/authStore.js';
@@ -172,18 +150,26 @@ const commentContent = ref('');
 
 const commentStore = useCommentStore();
 
+const commentsForBook = computed(() => {
+  return commentStore.commentsForBook;
+});
+
 const addComment = async () => {
   try {
     const bookId = route.params.id;
     const content = commentContent.value;
 
-    const userId = userStore.user.user._id;
+    const userId = userStore.user._id;
 
     await commentStore.addNewComment({
       bookId,
       content,
       userId
     });
+
+    commentContent.value = '';
+
+    await commentStore.fetchCommentsForBook(route.params.id);
   } catch (error) {
     console.log(error);
   }
@@ -204,6 +190,7 @@ const selectBook = () => {
 // Use onMounted to replicate created lifecycle hook
 onMounted(() => {
   selectBook();
+  commentStore.fetchCommentsForBook(route.params.id);
 });
 </script>
 

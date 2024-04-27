@@ -4,6 +4,8 @@ import * as authMiddleWare from "../middlewares/authMiddleWare.js";
 
 const router = express.Router();
 
+router.route("/book/:id").get(commentController.getCommentsForBook);
+
 router
   .route("/")
   .post(authMiddleWare.authenticateUser, commentController.createAComment);
