@@ -22,7 +22,7 @@
         </thead>
 
         <TransitionGroup name="list" tag="Tbody">
-          <tr v-for="book in userBooks" :key="book._id">
+          <tr v-for="book in paginatedBook" :key="book._id">
             <td>{{ book.title }}</td>
             <td>{{ book.author }}</td>
             <td style="max-width: 250px">
@@ -49,6 +49,10 @@
         </TransitionGroup>
       </table>
     </div>
+  </div>
+
+  <div class="row">
+    <PaginationApp :currentPage="currentPage" :totalPages="totalPages" @page-changed="updatePage" />
   </div>
 
   <!-- Modal -->
@@ -98,7 +102,7 @@
               id="description"
               class="form-control"
               cols="30"
-              rows="10"
+              rows="4"
               v-model="bookData.description"
             ></textarea>
           </div>
@@ -261,6 +265,7 @@ import { useBookStore } from '@/stores/bookStore.js';
 import { Modal } from 'bootstrap';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useToast } from 'vue-toastification';
+import PaginationApp from '../PaginationApp.vue';
 
 const modalTitle = ref('');
 const modal = ref(null);
@@ -276,8 +281,29 @@ const bookData = reactive({
 
 // Hesaplanan özellik, kullanıcının yüklediği kitapları getiriyor
 const userBooks = computed(() =>
-  bookStore.userUploadedBooks.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  // bookStore.userUploadedBooks.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  bookStore.books.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
 );
+
+// Pagination
+
+const currentPage = ref(1);
+const itemsPerPage = ref(4);
+
+const totalPages = computed(() => {
+  return Math.ceil(bookStore.books.length / itemsPerPage.value);
+});
+
+const paginatedBook = computed(() => {
+  const startIndex = (currentPage.value - 1) * itemsPerPage.value;
+  const endIndex = startIndex + itemsPerPage.value;
+  // return bookStore.books.slice(startIndex, endIndex);
+  return userBooks.value.slice(startIndex, endIndex);
+});
+
+const updatePage = (page) => {
+  currentPage.value = page;
+};
 
 // Açıklamayı kısaltma fonksiyonu
 const truncatedText = (description) =>
@@ -315,6 +341,7 @@ const showToast = useToast();
 const addBook = async () => {
   try {
     await bookStore.addNewBook(bookData);
+    currentPage.value = 1;
     modal.value.hide();
     Object.assign(bookData, { title: '', author: '', description: '', pageNumber: null });
     await bookStore.fetchBooksByUploader();

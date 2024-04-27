@@ -1,209 +1,203 @@
 <template>
-  <div class="container" v-if="!loading">
-    <SectionHeader v-if="book.title && book.author" :title="book.title" :text="book.author" />
-    <!-- <button class="btn btn-primary">Back</button> -->
-    <font-awesome-icon
-      :icon="['fas', 'arrow-left']"
-      size="2xl"
-      class="mb-2"
-      style="cursor: pointer"
-      @click="goToBackBooks"
-    />
-    <div class="row mb-4">
-      <div class="col-lg-6">
-        <img class="card-img-top" src="../../bostorek/images/b_detail.jpg" alt="" />
-      </div>
-      <div class="col-lg-6 details-wrapper">
-        <p class="lead description">
-          {{ book.description }}
-        </p>
-        <div class="mb-4">
-          <div class="row border-bottom pb-2">
-            <div class="col-lg-6">
-              <strong>Page</strong>
-            </div>
-            <div class="col-lg-6">{{ book.pageNumber }}</div>
-          </div>
-          <div class="row border-bottom pb-2">
-            <div class="col-lg-6">
-              <strong>Category</strong>
-            </div>
-            <div class="col-lg-6">Fiction</div>
-          </div>
-          <div class="row border-bottom pb-2">
-            <div class="col-lg-6">
-              <strong>Raiting</strong>
-            </div>
-            <div class="col-lg-6">{{ book.raiting }}</div>
-          </div>
-          <div class="row border-bottom pb-2">
-            <div class="col-lg-6">
-              <strong>Upload Date</strong>
-            </div>
-            <!-- <div class="col-lg-6">{{ book.updatedAt }}</div> -->
-            <div class="col-lg-6">{{ formattedUpdateDate }}</div>
-          </div>
+  <div class="container">
+    <SectionHeader :title="book.title" :text="book.author" />
+    <div class="d-flex">
+      <font-awesome-icon
+        icon="arrow-left"
+        size="xl"
+        class="mb-2"
+        style="cursor: pointer; color: var(--secondary-color)"
+        @click="goToBackBooks"
+      />
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="image-box">
+          <img class="img-fluid" src="../../bostorek/images/b_detail.jpg" />
         </div>
-
-        <div class="comments-section">
-          <h3 class="display-6 mb-6">Comments</h3>
-          <div class="card mb-2">
-            <div class="card-body">
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
-              <div class="d-flex justify-content-between">
-                <p class="fw-bold fst-italic">John Doe</p>
-                <div class="d-flex align-items-center">
-                  <font-awesome-icon :icon="['far', 'thumbs-up']" />
-                  <!-- <p>Upvote</p> -->
-                  <p class="ps-2 mb-0"><strong>9</strong></p>
-                </div>
-              </div>
-            </div>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex flex-column h-100 justify-content-between">
+          <div class="mb-3">
+            <p>
+              {{ book.description }}
+            </p>
           </div>
-          <div class="card mb-2">
-            <div class="card-body">
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
-              <div class="d-flex justify-content-between">
-                <p class="fw-bold fst-italic">John Doe</p>
-                <div class="d-flex align-items-center">
-                  <!-- <p>Upvote</p> -->
-                  <font-awesome-icon :icon="['far', 'thumbs-up']" />
-                  <p class="ps-2 mb-0"><strong>9</strong></p>
-                </div>
-              </div>
+          <div class="d-flex flex-column">
+            <div class="row border-bottom pb-2">
+              <div class="col-lg-6"><strong>Page</strong></div>
+              <div class="col-lg-6">{{ book.pageNumber }}</div>
             </div>
-          </div>
-          <div class="card mb-2">
-            <div class="card-body">
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
-              <div class="d-flex justify-content-between">
-                <p class="fw-bold fst-italic">John Doe</p>
-                <div class="d-flex align-items-center">
-                  <p>Upvote</p>
-                  <p class="ps-2 mb-0"><strong>9</strong></p>
-                </div>
-              </div>
+            <div class="row border-bottom pb-2">
+              <div class="col-lg-6"><strong>Rating</strong></div>
+              <div class="col-lg-6">8.2 - (23 rates)</div>
             </div>
-          </div>
-          <div class="card mb-2">
-            <div class="card-body">
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
-              <div class="d-flex justify-content-between">
-                <p class="fw-bold fst-italic">John Doe</p>
-                <div class="d-flex align-items-center">
-                  <p>Upvote</p>
-                  <p class="ps-2"><strong>9</strong></p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card mb-2">
-            <div class="card-body">
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
-              <div class="d-flex justify-content-between">
-                <p class="fw-bold fst-italic">John Doe</p>
-                <div class="d-flex align-items-center">
-                  <p>Upvote</p>
-                  <p class="ps-2"><strong>9</strong></p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="card mb-2">
-            <div class="card-body">
-              <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Impedit, pariatur!</p>
-              <div class="d-flex justify-content-between">
-                <p class="fw-bold fst-italic">John Doe</p>
-                <div class="d-flex align-items-center">
-                  <p>Upvote</p>
-                  <p class="ps-2"><strong>9</strong></p>
-                </div>
-              </div>
+            <div class="row border-bottom pb-2">
+              <div class="col-lg-6"><strong>Upload Date</strong></div>
+              <div class="col-lg-6">{{ book.updatedAt }}</div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="container" v-else>
-    <div class="d-flex justify-content-center">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
+    <div class="row mt-3">
+      <div class="col-md-6">
+        <div class="box">
+          <h3 style="color: var(--primary-color)">Rate The Book</h3>
+          <form>
+            <!-- Rating Input -->
+            <div class="mb-3">
+              <input
+                type="number"
+                id="rating"
+                class="form-control w-50"
+                min="1"
+                max="10"
+                placeholder="Rate (1-10)"
+                required
+              />
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Rate</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <div class="row mt-3">
+      <div class="col-md-12">
+        <div class="box">
+          <h3 style="color: var(--primary-color)">Comment The Book</h3>
+          <form>
+            <!-- Comment Text Area -->
+            <div class="mb-3">
+              <textarea
+                id="comment"
+                class="form-control"
+                rows="4"
+                placeholder="Enter your comment"
+                required
+              ></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Comment</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <div class="row my-3">
+      <div class="col-md-12">
+        <div class="box">
+          <h3 style="color: var(--primary-color)">Comments</h3>
+          <div>
+            <div class="card mb-4">
+              <div class="card-body">
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                  incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet,
+                  consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                  magna aliqua.
+                </p>
+
+                <div class="d-flex justify-content-between">
+                  <div class="d-flex flex-row align-items-center">
+                    <p class="small mb-0 ms-2">Username</p>
+                  </div>
+                  <div class="d-flex flex-row align-items-center" style="gap: 10px">
+                    <p class="small text-muted mb-0">Upvote?</p>
+                    <font-awesome-icon :icon="['far', 'thumbs-up']" />
+                    <p class="small text-muted mb-0">3</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card mb-4">
+              <div class="card-body">
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                  incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet,
+                  consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                  magna aliqua.
+                </p>
+
+                <div class="d-flex justify-content-between">
+                  <div class="d-flex flex-row align-items-center">
+                    <p class="small mb-0 ms-2">Username</p>
+                  </div>
+                  <div class="d-flex flex-row align-items-center" style="gap: 10px">
+                    <p class="small mb-0">Upvoted</p>
+                    <font-awesome-icon
+                      :icon="['fas', 'thumbs-up']"
+                      style="color: var(--secondary-color)"
+                    />
+                    <p class="small text-muted mb-0">4</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-import SectionHeader from '@/components/SectionHeader.vue';
+<script setup>
+import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useFormattedDate } from '@/composable/useFormattedDate';
-// import db from '@/db.js'
-import { onMounted, ref, watch } from 'vue';
 import { useBookStore } from '@/stores/bookStore.js';
-export default {
-  name: 'BookDetailView',
-  setup() {
-    const book = ref(null);
+import SectionHeader from '@/components/SectionHeader.vue';
 
-    const route = useRoute();
+// Access route and router instances
+const route = useRoute();
+const router = useRouter();
 
-    const router = useRouter();
+// Using ref for reactive references
+const book = ref('');
+const loading = ref(true);
 
-    const loading = ref(true);
+// Access book store and state
+const bookStore = useBookStore();
+const selectedBook = bookStore.selectedBook;
 
-    const bookStore = useBookStore();
-
-    const selectBook = () => {
-      const bookId = route.params.id;
-      book.value = bookStore.selectedBook(bookId);
-      loading.value = false;
-    };
-
-    onMounted(() => {
-      selectBook();
-    });
-
-    const formattedUpdateDate = ref('');
-    // book.value değiştiğinde çalışacak
-    watch(
-      () => book.value,
-      (newValue) => {
-        if (newValue && newValue.updatedAt) {
-          const { formattedDate } = useFormattedDate(newValue.updatedAt);
-          formattedUpdateDate.value = formattedDate.value;
-        }
-      },
-      { immediate: true }
-    );
-
-    const goToBackBooks = () => {
-      //   router.back() bu şekilde de olabilir.
-      //   router.push({ name: 'books' })
-      router.go(-1);
-    };
-
-    return { book, goToBackBooks, loading, formattedUpdateDate };
-  },
-  components: { SectionHeader }
+// Define method to go back to books
+const goToBackBooks = () => {
+  router.push({ name: 'books' });
 };
+
+// Define method to select a book
+const selectBook = () => {
+  const bookId = route.params.id;
+  book.value = selectedBook(bookId);
+  loading.value = false;
+};
+
+// Use onMounted to replicate created lifecycle hook
+onMounted(() => {
+  selectBook();
+});
 </script>
 
 <style scoped>
-.details-wrapper {
-  max-height: 740px;
-  display: flex;
-  flex-direction: column;
+.image-box {
+  height: 300px;
+  overflow: hidden;
+}
+.image-box img {
+  width: 100% !important;
 }
 
-.comments-section {
-  flex-grow: 1;
-  overflow-y: auto;
+.btn-primary {
+  height: 36px;
+  min-width: 120px;
+  border-radius: 16px;
 }
-
-.description {
-  min-height: 150px;
-  max-height: 250px;
-  overflow-y: auto;
+.box {
+  border: 1px solid #e2e3e5;
+  border-radius: 10px;
+  padding: 20px;
 }
 </style>
