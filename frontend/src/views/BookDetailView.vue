@@ -69,7 +69,7 @@
       <div class="col-md-12">
         <div class="box">
           <h3 style="color: var(--primary-color)">Comment The Book</h3>
-          <form>
+          <form @submit.prevent="addComment">
             <!-- Comment Text Area -->
             <div class="mb-3">
               <textarea
@@ -78,6 +78,7 @@
                 rows="4"
                 placeholder="Enter your comment"
                 required
+                v-model="commentContent"
               ></textarea>
             </div>
 
@@ -149,6 +150,8 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useBookStore } from '@/stores/bookStore.js';
+import { useAuthStore } from '@/stores/authStore.js';
+import { useCommentStore } from '@/stores/commentStore.js';
 import SectionHeader from '@/components/SectionHeader.vue';
 
 // Access route and router instances
@@ -162,6 +165,29 @@ const loading = ref(true);
 // Access book store and state
 const bookStore = useBookStore();
 const selectedBook = bookStore.selectedBook;
+
+// comment
+const userStore = useAuthStore();
+const commentContent = ref('');
+
+const commentStore = useCommentStore();
+
+const addComment = async () => {
+  try {
+    const bookId = route.params.id;
+    const content = commentContent.value;
+
+    const userId = userStore.user.user._id;
+
+    await commentStore.addNewComment({
+      bookId,
+      content,
+      userId
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 // Define method to go back to books
 const goToBackBooks = () => {
