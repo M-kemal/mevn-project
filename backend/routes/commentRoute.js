@@ -5,6 +5,9 @@ import * as authMiddleWare from "../middlewares/authMiddleWare.js";
 const router = express.Router();
 
 router.route("/book/:id").get(commentController.getCommentsForBook);
+router
+  .route("/user/:id")
+  .get(authMiddleWare.authenticateUser, commentController.getCommentsByUser);
 
 router
   .route("/")

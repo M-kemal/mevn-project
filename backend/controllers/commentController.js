@@ -34,4 +34,19 @@ const getCommentsForBook = async (req, res) => {
   }
 };
 
-export { createAComment, getCommentsForBook };
+const getCommentsByUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const comments = await Comment.find({ postedBy: id }).populate("book");
+
+    return res
+      .status(201)
+      .json({ message: "Comment for book fetched", comments });
+  } catch (error) {
+    console.error("Error at getCommentsByUser", error);
+    return res.status(500).json({ error: "Internal Server error." });
+  }
+};
+
+export { createAComment, getCommentsForBook, getCommentsByUser };
