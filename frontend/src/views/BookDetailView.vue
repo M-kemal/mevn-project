@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <SectionHeader :title="book.title" :text="book.author" />
+
     <div class="d-flex">
       <font-awesome-icon
         icon="arrow-left"
@@ -30,7 +31,7 @@
             </div>
             <div class="row border-bottom pb-2">
               <div class="col-lg-6"><strong>Rating</strong></div>
-              <div class="col-lg-6">8.2 - (23 rates)</div>
+              <div class="col-lg-6">{{ averageRating }} - ({{ ratingCount }} rates)</div>
             </div>
             <div class="row border-bottom pb-2">
               <div class="col-lg-6"><strong>Upload Date</strong></div>
@@ -43,32 +44,43 @@
     <div class="row mt-3">
       <div class="col-md-6">
         <div class="box">
-          <h3 style="color: var(--primary-color)">Rate The Book</h3>
-          <form>
-            <!-- Rating Input -->
-            <div class="mb-3">
-              <input
-                type="number"
-                id="rating"
-                class="form-control w-50"
-                min="1"
-                max="10"
-                placeholder="Rate (1-10)"
-                required
-              />
+          <div v-if="authStore.isLoggedIn">
+            <div v-if="!isUserAlreadyRated">
+              <h3 style="color: var(--primary-color)">Rate The Book</h3>
+              <form @submit.prevent="addRate">
+                <!-- Rating Input -->
+                <div class="mb-3">
+                  <input
+                    type="number"
+                    id="rating"
+                    class="form-control w-50"
+                    min="1"
+                    max="10"
+                    placeholder="Rate (1-10)"
+                    required
+                    v-model="userRate"
+                  />
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-primary">Rate</button>
+              </form>
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary">Rate</button>
-          </form>
+            <div v-else>Your Rate : {{ userRating }}</div>
+          </div>
+
+          <router-link v-else to="/login">
+            <p style="color: var(--secondary-color)">Log in to leave a rate for the book.</p>
+          </router-link>
         </div>
       </div>
     </div>
-    <hr v-if="userStore.isLoggedIn" />
+    <hr v-if="authStore.isLoggedIn" />
     <div class="row mt-3">
       <div class="col-md-12">
         <div class="box">
-          <div v-if="userStore.isLoggedIn">
+          <div v-if="authStore.isLoggedIn">
             <h3 style="color: var(--primary-color)">Comment The Book</h3>
             <form @submit.prevent="addComment">
               <!-- Comment Text Area -->
@@ -99,7 +111,11 @@
         <div class="box">
           <h3 style="color: var(--primary-color)">Comments</h3>
           <div>
-            <div v-for="comment in commentsForBook" :key="comment._id" class="card mb-4">
+            <div
+              v-for="comment in commentStore.commentsForBook"
+              :key="comment._id"
+              class="card mb-4"
+            >
               <div class="card-body">
                 <p>
                   {{ comment.content }}
@@ -124,12 +140,13 @@
   </div>
 </template>
 
-<script setup>
+<!-- <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useBookStore } from '@/stores/bookStore.js';
 import { useAuthStore } from '@/stores/authStore.js';
 import { useCommentStore } from '@/stores/commentStore.js';
+import { useRatingStore } from '@/stores/ratingStore.js';
 import SectionHeader from '@/components/SectionHeader.vue';
 
 // Access route and router instances
@@ -175,6 +192,47 @@ const addComment = async () => {
   }
 };
 
+const userRate = ref(null);
+
+const rateStore = useRatingStore();
+
+const ratingsForBook = computed(() => {
+  return rateStore.ratingsForBook;
+});
+// const ratings = computed(() => {
+//   return rateStore.ratings;
+// })
+
+const averageRating = computed(() => {
+  if (ratingsForBook.value > 0) {
+    const totalRating = ratingsForBook.value.reduce((sum,rating) => rating.rate, 0)
+    return
+  } else {
+    return 0;
+  }
+})
+
+const addRate = async () => {
+  try {
+    const bookId = route.params.id;
+    const rate = userRate.value;
+
+    const userId = userStore.user._id;
+
+    await rateStore.addNewRate({
+      bookId,
+      rate,
+      userId
+    });
+
+    userRate.value = null;
+
+    await rateStore.fetchRatingsForBook(route.params.id);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 // Define method to go back to books
 const goToBackBooks = () => {
   router.push({ name: 'books' });
@@ -191,6 +249,97 @@ const selectBook = () => {
 onMounted(() => {
   selectBook();
   commentStore.fetchCommentsForBook(route.params.id);
+});
+</script> -->
+
+<script setup>
+import { ref, onMounted, computed } from 'vue';
+import SectionHeader from '@/components/SectionHeader.vue';
+import { useBookStore } from '@/stores/bookStore.js';
+import { useAuthStore } from '@/stores/authStore.js';
+import { useCommentStore } from '@/stores/commentStore.js';
+import { useRatingStore } from '@/stores/ratingStore.js';
+import { useRoute, useRouter } from 'vue-router';
+
+// State and Store Setup
+const route = useRoute();
+const router = useRouter();
+const bookStore = useBookStore();
+const authStore = useAuthStore();
+const commentStore = useCommentStore();
+const ratingStore = useRatingStore();
+
+// Reactive data
+const book = ref('');
+const loading = ref(true);
+const commentContent = ref('');
+const userRate = ref(null);
+
+// Computed properties
+const averageRating = computed(() => {
+  const ratings = ratingStore.ratingsForBook;
+  if (ratings.length > 0) {
+    const totalRating = ratings.reduce((sum, rating) => sum + rating.rate, 0);
+    return (totalRating / ratings.length).toFixed(1);
+  }
+  return 0;
+});
+
+const ratingCount = computed(() => ratingStore.ratingsForBook.length);
+
+const isUserAlreadyRated = computed(() => {
+  if (!authStore.user) {
+    return false;
+  }
+  return ratingStore.ratingsForBook.some((rating) => rating.ratedBy._id === authStore.user._id);
+});
+
+const userRating = computed(() => {
+  const userRatingObj = ratingStore.ratingsForBook.find(
+    (rating) => rating.ratedBy._id === authStore.user._id
+  );
+  return userRatingObj ? userRatingObj.rate : null;
+});
+
+// Methods converted to functions
+const fetchCommentsAndRatings = () => {
+  commentStore.fetchCommentsForBook(route.params.id);
+  ratingStore.fetchRatingsForBook(route.params.id);
+};
+
+const selectBook = () => {
+  book.value = bookStore.selectedBook(route.params.id);
+  loading.value = false;
+};
+
+const addComment = async () => {
+  await commentStore.addNewComment({
+    bookId: route.params.id,
+    content: commentContent.value,
+    userId: authStore.user._id
+  });
+  commentContent.value = '';
+  fetchCommentsAndRatings();
+};
+
+const addRate = async () => {
+  await ratingStore.addNewRate({
+    bookId: route.params.id,
+    rate: userRate.value,
+    userId: authStore.user._id
+  });
+  userRate.value = null;
+  fetchCommentsAndRatings();
+};
+
+const goToBackBooks = () => {
+  router.push({ name: 'books' });
+};
+
+// Lifecycle Hooks
+onMounted(() => {
+  selectBook();
+  fetchCommentsAndRatings();
 });
 </script>
 
