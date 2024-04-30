@@ -11,6 +11,7 @@ router
 
 router
   .route("/")
+  .get(commentController.getAllComments)
   .post(authMiddleWare.authenticateUser, commentController.createAComment);
 
 export default router;
